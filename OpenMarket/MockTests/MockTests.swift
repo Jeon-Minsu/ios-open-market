@@ -65,7 +65,8 @@ class MockTests: XCTestCase {
         }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        let promise = expectation(description: "It makes random value")
+        
+//        let promise = expectation(description: "It makes random value")
         
         let urlSession = URLSession.shared
         let sut1 = URLData(session: urlSession)
@@ -77,14 +78,16 @@ class MockTests: XCTestCase {
         sut1.fetchData(url: request, dataType: Market.self) { response in
             if case let .success(market) = response {
                 result = market
+                XCTAssertTrue(result != nil)
             }
-            promise.fulfill()
+//            promise.fulfill()
+            XCTFail()
         }
-        wait(for: [promise], timeout: 10)
+//        wait(for: [promise], timeout: 10)
         
         // then
-        print(result)
-        XCTAssertTrue(result != nil)
+        
+        
         
     }
      

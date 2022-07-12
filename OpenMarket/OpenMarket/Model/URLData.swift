@@ -31,7 +31,6 @@ class URLData {
             }
             
             
-            
             if let response = response as? HTTPURLResponse,
                (200..<300).contains(response.statusCode)
                 {
