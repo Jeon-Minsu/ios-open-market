@@ -5,7 +5,7 @@
 //  Created by 케이, 수꿍 on 2022/07/11.
 //
 
-struct ProductList: Codable {
+struct ProductList: Codable, Hashable {
     let pageNumber: Int
     let itemsPerPage: Int
     let totalCount: Int

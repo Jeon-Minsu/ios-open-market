@@ -8,7 +8,7 @@
 import UIKit
 
 class CustomCell: UICollectionViewCell {
-    private let stackView: UIStackView = {
+    private let rootStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -20,12 +20,23 @@ class CustomCell: UICollectionViewCell {
         return stackView
     }()
     
+    private let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 5
+        stackView.alignment = .center
+        
+        return stackView
+    }()
+    
     let productImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(systemName: "pencil")
-//        imageView.backgroundColor = .systemBackground
+        imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor).isActive = true
         
         return imageView
     }()
@@ -66,6 +77,7 @@ class CustomCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         configure()
     }
     required init?(coder: NSCoder) {
@@ -76,21 +88,24 @@ class CustomCell: UICollectionViewCell {
 
 extension CustomCell {
     func configure() {
-        stackView.addArrangedSubview(productImageView)
+
+        contentView.addSubview(rootStackView)
+        rootStackView.addArrangedSubview(productImageView)
+        rootStackView.addArrangedSubview(stackView)
+        
         stackView.addArrangedSubview(productNameLabel)
         stackView.addArrangedSubview(priceLabel)
         stackView.addArrangedSubview(stockLabel)
-        contentView.addSubview(stackView)
         
-        
+
         let inset = CGFloat(10)
     
         
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: inset),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -inset),
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset)
+            rootStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: inset),
+            rootStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -inset),
+            rootStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
+            rootStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset)
         ])
         
 //        contentView.addSubview(productImageView)
@@ -123,5 +138,15 @@ extension CustomCell {
 //            stockLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
 //            stockLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset)
 //        ])
+    }
+    
+    func config(_ data: Model) {
+        productImageView.image = data.thumbnailImage
+        productNameLabel.text = data.name
+        priceLabel.text = String(data.price)
+        stockLabel.text = String(data.stock)
+        
+//        productNameLabel.textAlignment = .center
+//        productNameLabel.font = UIFont.preferredFont(forTextStyle: .title1)
     }
 }
