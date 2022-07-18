@@ -16,20 +16,6 @@ class ViewController: UIViewController {
         return control
     }()
     
-//    let listView: UIView = {
-//        let view = UIView()
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.backgroundColor = .yellow
-//        return view
-//    }()
-//
-//    let gridView: UIView = {
-//        let view = UIView()
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.backgroundColor = .green
-//        return view
-//    }()
-    
     var shouldHideListView: Bool? {
         didSet {
             guard let shouldHideListView = self.shouldHideListView else {
@@ -40,7 +26,6 @@ class ViewController: UIViewController {
             self.gridCollectionView?.isHidden = !self.listCollectionView.isHidden
         }
     }
-    
     
     
     var products: [Product] = []
@@ -92,7 +77,7 @@ class ViewController: UIViewController {
         self.segmentedControl.addTarget(self, action: #selector(didChangeValue(segment:)), for: .valueChanged)
 
         self.segmentedControl.selectedSegmentIndex = 0
-        self.didChangeValue(segment: self.segmentedControl)
+//        self.didChangeValue(segment: self.segmentedControl)
         
 //        createGridCollectionView()
 //        configDataSource()
@@ -113,23 +98,6 @@ class ViewController: UIViewController {
     
     private func makeSegmentedControl() {
         self.navigationItem.titleView = self.segmentedControl
-        
-//        self.view.addSubview(self.listView)
-//        self.view.addSubview(self.gridView)
-//
-//        NSLayoutConstraint.activate([
-//            self.listView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
-//            self.listView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
-//            self.listView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-//            self.listView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
-//        ])
-//
-//        NSLayoutConstraint.activate([
-//            self.gridView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
-//            self.gridView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
-//            self.gridView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-//            self.gridView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
-//        ])
     }
     
     // MARK: Grid Collection View
@@ -283,4 +251,3 @@ struct Model: Hashable {
         hasher.combine(identifier)
     }
 }
-
