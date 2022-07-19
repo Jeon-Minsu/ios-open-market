@@ -29,7 +29,7 @@ class ViewController: UIViewController {
     
     
     var products: [Product] = []
-    var modelArray: [Model] = []
+    var productsModel: [ProductEntity] = []
     
     func getData() {
         guard let url = URL(string: "https://market-training.yagom-academy.kr/api/products?page_no=1&items_per_page=10") else {
@@ -41,14 +41,10 @@ class ViewController: UIViewController {
             switch result {
             case .success(let productList):
                 self.products = productList.pages
-                
-                for i in 0..<self.products.count {
-                    let model = Model(name: self.products[i].name, currency: self.products[i].currency, price: self.products[i].price, bargainPrice: self.products[i].bargainPrice, stock: self.products[i].stock, thumbnailImage: self.products[i].thumbnailImage!)
-                    
-                    self.modelArray.append(model)
+                productList.pages.forEach { product in
+                    let item = ProductEntity(thumbnailImage: product.thumbnailImage!, name: product.name, currency: product.currency, originalPrice: product.price, discountedPrice: product.bargainPrice, stock: product.stock)
+                    self.productsModel.append(item)
                 }
-                
-                
                 
                 DispatchQueue.main.async {
                     self.createGridCollectionView()
@@ -58,7 +54,6 @@ class ViewController: UIViewController {
                     self.createListCollectionView()
                     self.configureListDataSource()
                 }
-                
                 
             default:
                 print("error")
@@ -77,16 +72,6 @@ class ViewController: UIViewController {
         self.segmentedControl.addTarget(self, action: #selector(didChangeValue(segment:)), for: .valueChanged)
 
         self.segmentedControl.selectedSegmentIndex = 0
-//        self.didChangeValue(segment: self.segmentedControl)
-        
-//        createGridCollectionView()
-//        configDataSource()
-//        gridCollectionView.isHidden = true
-        
-//        createListCollectionView()
-//        configureListDataSource()
-        
-    
     }
     
 
@@ -106,7 +91,7 @@ class ViewController: UIViewController {
     }
 
     var gridCollectionView: UICollectionView!
-    var dataSource: UICollectionViewDiffableDataSource<Section, Model>!
+    var dataSource: UICollectionViewDiffableDataSource<Section, ProductEntity>!
 
     func createGridLayout() -> UICollectionViewCompositionalLayout{
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
@@ -128,7 +113,7 @@ class ViewController: UIViewController {
 
     func createGridCollectionView() {
         gridCollectionView = UICollectionView(frame: .zero, collectionViewLayout: createGridLayout())
-
+        
         view.addSubview(gridCollectionView)
         gridCollectionView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -138,11 +123,6 @@ class ViewController: UIViewController {
             gridCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gridCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-
-//        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createGridLayout())
-//        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        collectionView.backgroundColor = .systemBackground
-//        view.addSubview(collectionView)
     }
 
 
@@ -150,12 +130,14 @@ class ViewController: UIViewController {
     func configDataSource() {
         // 5-1. `CellRegistration` 구현
 
-        let cellRegistration = UICollectionView.CellRegistration<CustomCell, Model> { cell, indexPath, item in
+        let cellRegistration = UICollectionView.CellRegistration<CustomGridCell, ProductEntity> { cell, indexPath, item in
 
 //            cell.productNameLabel.text = "\(item)"
 //            cell.contentView.backgroundColor = .systemBackground
-            cell.layer.borderColor = UIColor.black.cgColor
+            cell.layer.borderColor = UIColor.systemGray.cgColor
             cell.layer.borderWidth = 1
+            cell.layer.cornerRadius = 10
+            
 //            cell.productNameLabel.textAlignment = .center
 //            cell.productNameLabel.font = UIFont.preferredFont(forTextStyle: .title1)
             
@@ -166,15 +148,15 @@ class ViewController: UIViewController {
         }
 
         // 5-2. `UICollectionViewDiffableDataSource` 인스턴스 생성 및 cellProvider의 `dequeueConfiguredReusableCell` 구현
-        dataSource = UICollectionViewDiffableDataSource<Section, Model>(collectionView: gridCollectionView, cellProvider: { (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
+        dataSource = UICollectionViewDiffableDataSource<Section, ProductEntity>(collectionView: gridCollectionView, cellProvider: { (collectionView, indexPath, itemIdentifier) -> UICollectionViewCell? in
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
         })
 
         // 5-3. `NSDiffableDataSourceSnapShot` 생성
-        var snapShot = NSDiffableDataSourceSnapshot<Section, Model>()
+        var snapShot = NSDiffableDataSourceSnapshot<Section, ProductEntity>()
         snapShot.appendSections([.main])
-        snapShot.appendItems(modelArray)
-        dataSource.apply(snapShot, animatingDifferences: false)
+        snapShot.appendItems(productsModel)
+        dataSource.apply(snapShot, animatingDifferences: true)
     }
     
     // MARK: List Collection View
@@ -183,13 +165,23 @@ class ViewController: UIViewController {
     }
 
     var listCollectionView: UICollectionView!
-    var listDataSource: UICollectionViewDiffableDataSource<Section2, Model>!
+    var listDataSource: UICollectionViewDiffableDataSource<Section2, ProductEntity>!
     
     
     
-    private func createListLayout() -> UICollectionViewLayout {
-        let config = UICollectionLayoutListConfiguration(appearance: .plain)
-        return UICollectionViewCompositionalLayout.list(using: config)
+//    private func createListLayout() -> UICollectionViewLayout {
+//        let config = UICollectionLayoutListConfiguration(appearance: .plain)
+//        return UICollectionViewCompositionalLayout.list(using: config)
+//    }
+    
+    func createListLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.2))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 1)
+        let section = NSCollectionLayoutSection(group: group)
+        let layout = UICollectionViewCompositionalLayout(section: section)
+        return layout
     }
     
     private func createListCollectionView() {
@@ -206,48 +198,49 @@ class ViewController: UIViewController {
     }
     
     private func configureListDataSource() {
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Model> { (cell, indexPath, item) in
-            var content = cell.defaultContentConfiguration()
+        let cellRegistration = UICollectionView.CellRegistration<CustomListCell, ProductEntity> { (cell, indexPath, item) in
+//            var content = cell.defaultContentConfiguration()
 //            content.image = UIImage(systemName: "pencil")
 //            content.text = "\(item)"
 //            content.secondaryText = "가격 정보입니다"
-            content.image = item.thumbnailImage
-            content.text = item.name
-            content.secondaryText = String(item.price)
-            content.imageProperties.maximumSize = CGSize(width: 60, height: 60)
+//            content.image = item.thumbnailImage
+//            content.text = item.name
+//            content.secondaryText = String(item.originalPrice)
+//            content.imageProperties.maximumSize = CGSize(width: 60, height: 60)
             
-            cell.contentConfiguration = content
+//            cell.contentConfiguration = content
             
-            cell.accessories = [.label(text: "품절"), .disclosureIndicator()]
+//            cell.separatorLayoutGuide.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10).isActive = true
+
+
+            
+            cell.configList(item)
+            
+//            cell.accessories = [.label(text: "품절"), .disclosureIndicator()]
+            cell.accessories = [.disclosureIndicator()]
             
         }
         
-        listDataSource = UICollectionViewDiffableDataSource<Section2, Model>(collectionView: listCollectionView) {
-            (collectionView: UICollectionView, indexPath: IndexPath, identifier: Model) -> UICollectionViewCell? in
+        listDataSource = UICollectionViewDiffableDataSource<Section2, ProductEntity>(collectionView: listCollectionView) {
+            (collectionView: UICollectionView, indexPath: IndexPath, identifier: ProductEntity) -> UICollectionViewCell? in
             
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: identifier)
         }
 
         // initial data
-        var snapshot = NSDiffableDataSourceSnapshot<Section2, Model>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section2, ProductEntity>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(modelArray)
-        listDataSource.apply(snapshot, animatingDifferences: false)
+        snapshot.appendItems(productsModel)
+        listDataSource.apply(snapshot, animatingDifferences: true)
     }
 }
 
-struct Model: Hashable {
+struct ProductEntity: Hashable {
+    let id = UUID()
+    let thumbnailImage: UIImage
     let name: String
     let currency: String
-    let price: Int
-    let bargainPrice: Int
+    let originalPrice: Int
+    let discountedPrice: Int
     let stock: Int
-    let thumbnailImage: UIImage
-    
-    
-
-    let identifier = UUID()
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(identifier)
-    }
 }
