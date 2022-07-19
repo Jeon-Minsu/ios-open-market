@@ -1,5 +1,5 @@
 //
-//  CustomCell.swift
+//  CollectionGridCell.swift
 //  OpenMarket
 //
 //  Created by 전민수 on 2022/07/17.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CustomCell: UICollectionViewCell {
+class CollectionGridCell: UICollectionViewCell {
     private let rootStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -15,8 +15,6 @@ class CustomCell: UICollectionViewCell {
         stackView.distribution = .fill
         stackView.spacing = 5
         stackView.alignment = .center
-        
-        
         return stackView
     }()
     
@@ -45,9 +43,6 @@ class CustomCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .caption1)
-//        label.adjustsFontForContentSizeCategory = true
-        label.text = "상품이름입니다"
-        
         return label
     }()
     
@@ -55,8 +50,15 @@ class CustomCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .caption2)
-//        label.adjustsFontForContentSizeCategory = true
-        label.text = "제품가격입니다"
+        label.textColor = .gray
+        
+        return label
+    }()
+    
+    let discountedLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.preferredFont(forTextStyle: .caption2)
         label.textColor = .gray
         
         return label
@@ -66,8 +68,6 @@ class CustomCell: UICollectionViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .caption2)
-//        label.adjustsFontForContentSizeCategory = true
-        label.text = "재고수량입니다"
         label.textColor = .gray
         
         return label
@@ -86,7 +86,7 @@ class CustomCell: UICollectionViewCell {
     
 }
 
-extension CustomCell {
+extension CollectionGridCell {
     func configure() {
 
         contentView.addSubview(rootStackView)
@@ -95,58 +95,26 @@ extension CustomCell {
         
         stackView.addArrangedSubview(productNameLabel)
         stackView.addArrangedSubview(priceLabel)
+        stackView.addArrangedSubview(discountedLabel)
+
         stackView.addArrangedSubview(stockLabel)
-        
+
 
         let inset = CGFloat(10)
-    
-        
+            
         NSLayoutConstraint.activate([
             rootStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: inset),
             rootStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -inset),
             rootStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
             rootStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset)
         ])
-        
-//        contentView.addSubview(productImageView)
-//        contentView.addSubview(productNameLabel)
-//        contentView.addSubview(priceLabel)
-//        contentView.addSubview(stockLabel)
-//
-//
-//        let inset = CGFloat(10)
-        
-        
-        
-//        NSLayoutConstraint.activate([
-//            productNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: inset),
-//            productNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -inset),
-//            productNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
-//            productNameLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset)
-//        ])
-//
-//        NSLayoutConstraint.activate([
-//            priceLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: inset),
-//            priceLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -inset),
-//            priceLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
-//            priceLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset)
-//        ])
-//
-//        NSLayoutConstraint.activate([
-//            stockLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: inset),
-//            stockLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -inset),
-//            stockLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: inset),
-//            stockLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -inset)
-//        ])
     }
     
     func config(_ data: Model) {
         productImageView.image = data.thumbnailImage
         productNameLabel.text = data.name
         priceLabel.text = String(data.price)
+        discountedLabel.text = data.bargainPrice.description
         stockLabel.text = String(data.stock)
-        
-//        productNameLabel.textAlignment = .center
-//        productNameLabel.font = UIFont.preferredFont(forTextStyle: .title1)
     }
 }

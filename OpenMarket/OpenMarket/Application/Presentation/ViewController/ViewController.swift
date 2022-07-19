@@ -138,11 +138,6 @@ class ViewController: UIViewController {
             gridCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gridCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-
-//        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createGridLayout())
-//        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        collectionView.backgroundColor = .systemBackground
-//        view.addSubview(collectionView)
     }
 
 
@@ -150,19 +145,10 @@ class ViewController: UIViewController {
     func configDataSource() {
         // 5-1. `CellRegistration` 구현
 
-        let cellRegistration = UICollectionView.CellRegistration<CustomCell, Model> { cell, indexPath, item in
-
-//            cell.productNameLabel.text = "\(item)"
-//            cell.contentView.backgroundColor = .systemBackground
+        let cellRegistration = UICollectionView.CellRegistration<CollectionGridCell, Model> { cell, indexPath, item in
             cell.layer.borderColor = UIColor.black.cgColor
             cell.layer.borderWidth = 1
-//            cell.productNameLabel.textAlignment = .center
-//            cell.productNameLabel.font = UIFont.preferredFont(forTextStyle: .title1)
-            
-
             cell.config(item)
-            
-            
         }
 
         // 5-2. `UICollectionViewDiffableDataSource` 인스턴스 생성 및 cellProvider의 `dequeueConfiguredReusableCell` 구현
@@ -185,8 +171,6 @@ class ViewController: UIViewController {
     var listCollectionView: UICollectionView!
     var listDataSource: UICollectionViewDiffableDataSource<Section2, Model>!
     
-    
-    
     private func createListLayout() -> UICollectionViewLayout {
         let config = UICollectionLayoutListConfiguration(appearance: .plain)
         return UICollectionViewCompositionalLayout.list(using: config)
@@ -206,19 +190,10 @@ class ViewController: UIViewController {
     }
     
     private func configureListDataSource() {
-        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Model> { (cell, indexPath, item) in
-            var content = cell.defaultContentConfiguration()
-//            content.image = UIImage(systemName: "pencil")
-//            content.text = "\(item)"
-//            content.secondaryText = "가격 정보입니다"
-            content.image = item.thumbnailImage
-            content.text = item.name
-            content.secondaryText = String(item.price)
-            content.imageProperties.maximumSize = CGSize(width: 60, height: 60)
+        let cellRegistration = UICollectionView.CellRegistration<CollectionListViewCell, Model> { (cell, indexPath, item) in
+            cell.config(item)
             
-            cell.contentConfiguration = content
-            
-            cell.accessories = [.label(text: "품절"), .disclosureIndicator()]
+            cell.accessories = [.disclosureIndicator()]
             
         }
         
