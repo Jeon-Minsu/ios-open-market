@@ -1,18 +1,18 @@
 //
-//  ProductCollectionViewCell.swift
+//  GridCollectionViewCell.swift
 //  OpenMarket
 //
-//  Created by Derrick kim on 2022/07/12.
+//  Created by Kay on 2022/07/20.
 //
 
 import UIKit
 
-final class ProductCollectionViewCell: UICollectionViewListCell {
+class GridCollectionViewCell: UICollectionViewCell {
     private let rootStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.distribution = .fill
-        stackView.axis = .horizontal
+        stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.spacing = 10
         return stackView
@@ -20,9 +20,9 @@ final class ProductCollectionViewCell: UICollectionViewListCell {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.image = UIImage(named: "mini")
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor).isActive = true
         return imageView
     }()
@@ -39,17 +39,17 @@ final class ProductCollectionViewCell: UICollectionViewListCell {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .title3)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.preferredFont(forTextStyle: .title3)
         return label
     }()
     
     private let secondaryStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.distribution = .fill
+        stackView.distribution = .fillEqually
         stackView.alignment = .fill
-        stackView.axis = .horizontal
+        stackView.axis = .vertical
         stackView.spacing = 0
         return stackView
     }()
@@ -71,8 +71,8 @@ final class ProductCollectionViewCell: UICollectionViewListCell {
     private let stockLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.preferredFont(forTextStyle: .caption1)
-        label.textAlignment = .right
+        label.font = UIFont.preferredFont(forTextStyle: .callout)
+        label.textAlignment = .center
         return label
     }()
     
@@ -84,13 +84,6 @@ final class ProductCollectionViewCell: UICollectionViewListCell {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func prepareForReuse() {
-        imageView.image = nil
-        titleLabel.text = nil
-        originPriceLabel.text = nil
-        bargainPriceLabel.text = nil
     }
     
     func addSubView() {
@@ -110,23 +103,8 @@ final class ProductCollectionViewCell: UICollectionViewListCell {
             rootStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             rootStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             rootStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            rootStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            
-            stockLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 50)
+            rootStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
-    }
-    
-    func configureStackView(of axis: NSLayoutConstraint.Axis, textAlignment: NSTextAlignment) {
-        rootStackView.axis = axis
-        secondaryStackView.axis = axis
-        titleLabel.textAlignment = textAlignment
-        originPriceLabel.textAlignment = textAlignment
-        bargainPriceLabel.textAlignment = textAlignment
-        stockLabel.textAlignment = axis == .horizontal ? .right : .center
-        
-        if axis == .horizontal {
-            secondaryStackView.alignment = .fill
-        }
     }
     
     func configure(_ data: ProductEntity) {
@@ -135,5 +113,22 @@ final class ProductCollectionViewCell: UICollectionViewListCell {
         originPriceLabel.text = data.originalPrice.description
         bargainPriceLabel.text = data.discountedPrice.description
         stockLabel.text = data.stock.description == "0" ? "품절" : data.stock.description
+        if data.originalPrice == data.discountedPrice {
+            bargainPriceLabel.isHidden = true
+            originPriceLabel.attributedText = originPriceLabel.text?.strikeThrough(value: 0)
+            originPriceLabel.textColor = .systemGray
+        } else {
+            bargainPriceLabel.isHidden = false
+            originPriceLabel.attributedText = originPriceLabel.text?.strikeThrough(value: NSUnderlineStyle.single.rawValue)
+            originPriceLabel.textColor = .systemRed
+        }
+    }
+}
+
+extension String {
+    func strikeThrough(value: Int) -> NSAttributedString {
+        let attributeString = NSMutableAttributedString(string: self)
+        attributeString.addAttribute(NSAttributedString.Key.strikethroughStyle, value: value, range: NSMakeRange(0, attributeString.length))
+        return attributeString
     }
 }

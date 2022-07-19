@@ -18,8 +18,6 @@ final class MarketProductsViewController: UIViewController {
     private let networkProvider = NetworkProvider()
     private var productsModel: [ProductEntity] = []
     
-    private var isSelected: Bool = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -41,7 +39,7 @@ extension MarketProductsViewController {
                     DispatchQueue.main.async { [weak self] in
                         self?.configureSegmentedControl()
                         self?.configureHierarchy()
-                        self?.configureDataSource()
+                        self?.ListconfigureDataSource()
                         self?.productCollectionView.reloadData()
                     }
                 }
@@ -111,18 +109,14 @@ private extension MarketProductsViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
     }
     
-    func configureDataSource() {
+    func ListconfigureDataSource() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, ProductEntity>()
         snapshot.appendSections([.main])
         
-        let cellListRegistration = UICollectionView.CellRegistration<ProductCollectionViewCell, ProductEntity> { (cell, indexPath, item) in
-            cell.configure(item)
-            
-            if self.isSelected == false {
-                cell.accessories = [.disclosureIndicator()]
-            } else {
-                cell.accessories = [.delete()]
-            }
+        let cellListRegistration = UICollectionView.CellRegistration<ListCollectionViewCell, ProductEntity> { (cell, indexPath, item) in
+            cell.Listconfigure(item)
+            cell.accessories = [.disclosureIndicator()]
+           
         }
         
         productDataSource = UICollectionViewDiffableDataSource<Section, ProductEntity>(collectionView: productCollectionView) {
@@ -147,7 +141,7 @@ private extension MarketProductsViewController {
         case 0 :
             productCollectionView.setCollectionViewLayout(createListLayout(), animated: true)
             productCollectionView.visibleCells.forEach { cell in
-                guard let cell = cell as? ProductCollectionViewCell else {
+                guard let cell = cell as? ListCollectionViewCell else {
                     return
                 }
                 
@@ -155,21 +149,19 @@ private extension MarketProductsViewController {
                 cell.contentView.layer.borderWidth = 0
                 cell.accessories = [.disclosureIndicator()]
                 
-                cell.configureStackView(of: .horizontal, textAlignment: .left)
+                cell.ListconfigureStackView(of: .horizontal, textAlignment: .left)
             }
         case 1:
             productCollectionView.setCollectionViewLayout(createGridLayout(), animated: true)
             productCollectionView.visibleCells.forEach { cell in
-                guard let cell = cell as? ProductCollectionViewCell else {
+                guard let cell = cell as? ListCollectionViewCell else {
                     return
                 }
-                
-                isSelected = true
-                cell.accessories = [.delete()]
+
                 cell.contentView.layer.borderColor = UIColor.black.cgColor
                 cell.contentView.layer.borderWidth = 1
                 
-                cell.configureStackView(of: .vertical, textAlignment: .center)
+                cell.GridconfigureStackView(of: .vertical, textAlignment: .center)
             }
             
             productCollectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: false)
