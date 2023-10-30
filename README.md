@@ -629,3 +629,53 @@ func presentConfirmAlert(message: String) {
     
 - 상품 등록은 POST 메서드를 통하여 진행됩니다. 오픈마켓 API를 확인해보니 상품 등록에 관하여 Request Body의 Params를 살펴보니, name, descriptions, price, currency, secret은 required 체크가 되어있었고, discounted_price, stock은 requried 체크가 되어 있지 않았습니다. 즉, 전자의 파라미터의 경우는 서버 등록을 위해서 필수적인 파라미터이므로, 이를 하나라도 값을 누락한다면, 서버로 상품 등록이 안 될 것이라고 생각하였습니다. 하지만, POSTMAN과 오픈 마켓 어플리케이션을 통해 확인해본 결과, description에 값을 할당하지 않은 상태임에도 서버로 POST가 되었고, GET 또한 이루어지는 것을 발견하였습니다. 이를 어플리케이션 내 상품 상세 페이지에서 UI를 구현하고자 했을 때는, 데이터가 정상적으로 들어오지 않아 빈 화면을 출력하였습니다. 
 - 이에 저희는 두 가지 의문점을 제기하고 싶습니다. 먼저, 필수 요소로 선언된 파라미터를 사용하지 않고도 서버에 상품이 등록될 수 있는지 질문드리고 싶고, 그렇다면 이를 어떻게 정상적으로 상품 상세 페이지에 출력해야하는지 여쭈어 보고 싶습니다.
+
+### A1. **POST 시 Requried Parameters 관련 질문**
+
+- 먼저 첫번째 의문점에 대해서는 서버에서 해당 처리를 잘못한 듯 하다는 피드백을 받았다. 리뷰어 기준에서는 필수값이면 등록되지 않도록 서버로직을 짜야 한다고 생각한다는 의견을 덧붙였다. 다음으로, 두번째 의문점에 대해서는 서버 응답값에 필수값이 빠진 경우에 어떻게 대처할 것인지 질문하신 걸로 이해한다면, 리뷰어라면 해당 응답값이 잘못된 응답값이라도 디코딩 잘 되도록 모델을 구현할 것이라는 피드백을 받았다.
+- 서버에서 필수 값을 보내야 하는데 보내지 않은 건 엄연히 서버 잘못이지만 충분히 생길 수 있는 문제 상황이다. 예를 들어 이미 배포된 서버 응답값에는 클라이언트가 잘 대응하다가 새로 서버를 배포했을 때 서버 응답값이 잘못 내려와 클라이언트 쪽에서 디코딩을 못해 아무런 화면을 보이지 못한다면 사용자는 아무것도 못볼 것이기 때문이다.
+- 따라서 어느 경우라도 디코딩을 잘해 일부 값이라도 보이기 위해 DTO(Data Transfer Object)의 프로퍼티로 옵셔널 타입을 쓰고 타입은 Enum 대신 raw한 타입을 쓰는(ex. String, Int...)방법을 쓸 수 있다. 필수 값임에도 불구하고 내려오지 않거나 잘못된 값이 내려오는 상황을 대비해 옵셔널을 사용하고 Enum 타입 사용을 지양하는 것이다.
+- 위의 개념을 뒷받침하는 예시로 리뷰어에게 다음의 코드 예시를 받았다.
+- 코드 by 제이슨
+    
+    ```swift
+    struct OnethingUserModel: Codable {
+        let name: String?
+        let email: String?
+        let authType: String?
+        let nickname: String?
+        let imageType: String?
+        let enableAlarm: String?
+        
+        var castingAccessType: SocialAccessType? {
+            guard let authType = self.authType,
+                  let accessType = SocialAccessType(rawValue: authType)
+            else { return nil }
+            
+            return accessType
+        }
+        
+        var profileImageType: OnethingProfileType? {
+            guard let strongImageType = self.imageType,
+                  let imageType = OnethingProfileType(rawValue: strongImageType)
+            else { return nil }
+            
+            return imageType
+        }
+        
+        var castingAlarm: AlarmToggle? {
+            guard let enableAlarm = self.enableAlarm,
+                  let alarmToggle = AlarmToggle(rawValue: enableAlarm)
+            else { return nil }
+            
+            return alarmToggle
+        }
+        
+        enum AlarmToggle: String {
+            case on = "ON"
+            case off = "OFF"
+        }
+    }
+    ```
+    
+- 이 예시는 필수값이어도 Optional 로 받고 Enum화 할수 있는 프로퍼티여도 raw한 타입으로 선언하고 이후에 이 모델값을 사용할때는 연산프로퍼티를 통해 Enum 생성후 이용하는 방식이라고 한다.
