@@ -3,7 +3,7 @@
 ## 프로젝트 소개
 오픈마켓을 창설하여 상품을 관리해본다.
 
-> 프로젝트 기간: 2022-07-25 ~ 2022-08-05</br>
+> 프로젝트 기간: 2022-07-11 ~ 2022-08-05</br>
 > 팀원: [수꿍](https://github.com/Jeon-Minsu), [데릭](https://github.com/derrickkim0109) </br>
 리뷰어: [제이슨](https://github.com/ehgud0670)</br>
 
@@ -31,6 +31,41 @@
 ## ⏱ TimeLine
 
 ### Week 1
+> 2022.7.11 ~ 2022.7.15
+    
+- 2022.07.11 - STEP1 
+    - 서버 매핑 모델 구현
+    - 네트워크와 무관한 Unit Test을 위한 MockTests 추가
+- 2022.07.12 - STEP1 
+    - URLSession 기능 구현
+- 2022.07.13 - STEP1 PR
+    - URLSession 리팩토링
+    - STEP1 PR 제출
+- 2022.07.14 - STEP1 피드백 반영
+    - 코드 리팩토링(네이밍, 폴더 구조 변경)
+- 2022.07.15 - STEP1 피드백 반영
+    - 문서 수정
+
+
+### Week 2
+    
+> 2022.7.18 ~ 2022.7.22
+    
+- 2022.07.18 - STEP2 
+    - 초기 화면에 필요한 CollectionView 기능 탐색
+- 2022.07.19 - STEP2 
+    - 서버 매핑 모델 활용을 위한 Entity 생성
+    - segmented control 구현
+    - CollectionView 구현
+- 2022.07.20 - STEP2 PR
+    - CollectionView 리팩토링
+    - STEP2 PR 제출
+- 2022.07.21 - STEP1 피드백 반영
+    - STEP2 기능 향상을 위한 기능 테스트(URLCache, NSCache)
+- 2022.07.22 - STEP1 피드백 반영
+    - 문서 수정
+
+### Week 3
     
 > 2022.7.25 ~ 2022.7.29
     
@@ -57,12 +92,12 @@
     - Keyboard 줄바꿈 시 TextView 라인 자동 생성 및 View 높이에 맞게 Keyboard 설정
     - UIScrollView 내에서의 UITextField Autolayout 설정
 
-### Week 2
+### Week 4
     
 > 2022.8.01 ~ 2022.8.05
     
 - 2022.08.01
-    - STEP2 기능 실험
+    - STEP4 기능 실험
         - ScrollView를 통한 상품 상세 페이지 스크롤 기능 연습
 
 - 2022.08.02 
@@ -86,7 +121,7 @@
         - Alert, 화면전환 시 중복적으로 사용된 DispatchQueue 수정
         - 매직 리터럴 삭제를 위한 타입 생성
         - 불필요한 개행 및 코드 들여쓰기 제거
-    - STEP2 PR
+    - STEP4 PR
     
 - 2022.08.05
     - loading indicator 구현
@@ -98,6 +133,27 @@
     
 ## 💡 키워드
 
+- `POP`, `protocol`, `extension`
+- `URL`, `URLSession`, `URLDataTask`
+- `dataTask`, `completion` 
+- `Data`
+- `URLResponse`, `HTTPURLResponse`, `statusCode`
+- `Error`
+- `resume`
+- `Result Type`, `escaping closure`
+- `JSONDecoder`
+- `Generics`
+- `Codable`, `CodingKeys`
+- `Server Mapping Model`, `Entity`, `ViewModel`, `Hashable`
+- `String`, `NSAttributedString`, `strikethroughStyle`
+- `Int`, `NumberFormatter`
+- `UISegmentedControl`, `addTarget`, `selectedSegmentIndex`
+- `UICollectionView`, `UICollectionViewDiffableDataSource`
+- `UICollectionViewCompositionalLayout`, `NSCollectionLayoutSize`, `NSCollectionLayoutItem`, `NSCollectionLayoutGroup`, `NSCollectionLayoutSection`
+- `CellRegistration`, `dequeueConfiguredReusableCell`
+- `layer`, `borderColor`, `borderWidth`, `cornerRadius`
+- `NSDiffableDataSourceSnapshot`, `appendSections`, `appendItems`, `apply`
+- `AutoLayout`, `prepareForReuse`
 - `UICollectionViewDelegate`
 - `HTTP`, `Header`, `Body`
 - `HTTPMethod`, `GET`, `POST`, `PATCH`, `DELETE`
@@ -120,6 +176,13 @@
     
 ## 🤔 핵심경험
 
+- [x] 파싱한 JSON 데이터와 매핑할 모델 설계
+- [x] URL Session을 활용한 서버와의 통신
+- [x] CodingKeys 프로토콜의 활용
+- [x] 네트워크 상황과 무관한 네트워킹 데이터 타입의 단위 테스트(Unit Test)
+- [x] Safe Area을 고려한 오토 레이아웃 구현
+- [x] Collection View의 활용
+- [x] Mordern Collection View 활용
 - [x] multipart/form-data의 구조 파악
 - [x] URLSession을 활용한 multipart/form-data 요청 전송
 - [x] 사용자 친화적인 UI/UX 구현 (적절한 입력 컴포넌트 사용, 알맞은 키보드 타입 지정)
@@ -300,8 +363,28 @@ Utilities
 - Product Secret을 받은 후 DELETE로 상품 삭제 
         
 ## 🚀 TroubleShooting
-    
+
 ### STEP 1
+
+#### T1. 주고 받는 모델 타입의 불일치로 인한 통신 실패 해결.
+- URLSession와 GET Method를 테스트를 했을때 값을 제대로 받아오지 못하는 문제를 만났습니다. 예를들어 서버에서는 Product 모델 타입의 정보를 주는데 클라이언트에서 받는 모델 타입이 WebPage이면 제대로된 통신이 이뤄질 수 없다는것을 확인하였습니다. 이후 서버에서 주는 형식이 클라이언트에서 받는 형식과 동일 해야 정상적으로 받아올 수 있는것을 확인하였습니다. 
+
+    
+#### T2. 하나의 파라미터에 서로 다른 두개의 타입 사용 고민 해결.
+- fetchData메서드와 dataTask(with:) 메서드의 매개변수로 URL 타입과 URLRequest 타입을 모두 사용하기 위해 메서드 오버로딩을 생각했었습니다. protocol 선언후 두 타입이 채택하는 방법이 많은 양의 코드를 반복하는 오버로딩 방식보다 가독성과 효율적인 측면에서 낫다고 판단해 들어갈수있는 모든 타입이 특정 프로토콜을 채택하는 방식으로 문제를 해결했습니다.
+
+### STEP 2
+
+#### T1. AutoLayout
+    
+- 하나의 Cell을 통하여 List에서 Grid로의 AutoLayout을 설정하기 위해 이전에 설정된 List Layout의 Constraints을 제거한 후, Grid의 Constraints를 설정하려 하였으나, 이미 Cell이 생성된 이후에 Constraint를 제거하기 위한 시도를 하기 때문에 오토레이아웃이 정상적으로 설정되지 않는 문제가 발생되었습니다. 이에 notification 등을 통해 알림을 바탕으로 해결할 수 있을까도 고민해보았으나, 해당 방법은 오히려 과하다고 판단하여, 위의 문제를 해결하기 위하여 list, grid 레이아웃을 위한 각각의 셀을 만든 다음, 서로 다른 오토레이아웃을 적용해 문제를 해결하였습니다.
+
+#### T2. Server Mapping Model - Entity - ViewModel
+    
+- 서버로부터 데이터를 요청하여, 이에 대한 응답을 받은 다음, 이를 JSON 데이터 형식으로 변환하여, 해당 데이터를 저장하고, 관리되어야 하는 데이터의 집합을 만들 필요성을 느꼈습니다. 이에, 서버로부터 데이터를 요청하는 부분은 NetworkProvider 인스턴스를 생성하여 URL을 입력받아 requestAndDecode 메서드를 실행하였습니다. 다음으로, 응답을 받은 다음, 이를 JSON 데이터 형식으로 변환하는 부분은 서버로부터의 응답을 바탕으로 성공, 실패 케이스를 분기하여, 서버로부터 성공적으로 응답을 받을시, STEP1에서 구현한 서버 매핑 모델인 ProductList 구조체에 담은 다음, 실제 필요한 데이터를 추출하여 저장 및 관리하기 위해 ProductEntity 구조체를 생성하여 이를 처리하였습니다. 위의 방법들을 통하여 '서버 매핑 모델 - Entity - ViewModel'의 구조를 구현하고자 하였습니다.
+
+    
+### STEP 3
 
 #### T1. URLRequest 통합 관리 방법
     
@@ -523,7 +606,7 @@ func registerNotificationForKeyboard() {
 productDescriptionTextView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
 ```
 
-### STEP 2
+### STEP 4
     
 #### T1. 상품 상세 페이지 스크롤 문제
     
@@ -575,16 +658,261 @@ func presentConfirmAlert(message: String) {
     }
 }
 ```
-    
-## 📚 참고문서
 
-- [Data Entry - iOS - Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/patterns/entering-data/)
-- [UIAlertController](https://developer.apple.com/documentation/uikit/uialertcontroller)
 --- 
-    
+
 ## 1️⃣ STEP 1
 
 ### STEP 1 Questions & Answers
+
+#### Q1. Unit Test 시 실제 서버로부터 데이터를 가져오지 못하는 이슈
+- 추가로, URLDataTests 파일 내 func test_fetchData_메서드가_실제_홈페이지에서_data를_가져오는지_테스트()에서 실제 서버에서 데이터를 받는 작업을 진행 해보았는데, fetchData 메서드가 호출되는 부분에서는 Grand Central Dispatch queue에서 진행되어, global 스레드에서 진행되는 것으로 알고 있습니다. 이때문에, test 함수가 끝난 이후에 fetchData 메서드가 진행될 수 있기 때문에, expectation, fulfill, wait을 통해 함수가 미리 종료되는 것을 방지하고 있습니다. 현재 적용되어 있는 코드는 timeout을 10초로 설정해두었습니다. 하지만 만약 서버에서 전송하는 시각이 10초 이후에 이뤄진다면 저희의 코드는 정상적으로 작동할 수 없다는 것을 확인 하였습니다. 이를 해결할 수 있는 좋은 방법이 있을지 여쭈어보고 싶습니다!!
+
+#### A1. Unit Test 시 실제 서버로부터 데이터를 가져오지 못하는 이슈
+
+- 가장 먼저 Network 작업은 어떻게 동작하는지와 어떻게 처리해야 할지 고민을 해보시는걸 추천드립니다. Task 작업은 왜 global 스레드에서 동작하는지, 왜 **[@escaping](https://github.com/escaping)** 키워드를 사용하는지, 마지막으로 네트워크 통신을 통해 얻어진 response data를 어떻게 사용해야할지 고민해보시면 좋겠습니다.
+- 해당 이슈를 통해 왜 네트워크와 무관한 UnitTest를 해야하는지 한번 돌아보시면 좋을 것 같습니다.
+- UnitTest 시 Mock 데이터를 사용하는 이유에 대하여 다음과 같이 분리하여 설명하고자 합니다.
+1. 가장 먼저 Network 작업은 어떻게 동작하는지와 어떻게 처리해야 할지
+
+> 네트워킹이란 서버와 앱 간의 데이터를 주고받는 것입니다. Networking은 서버와 앱 간의 데이터를 주고받기 위하여 HTTP 방식으로 REST API를 이용해서 JSON 데이터를 주고받습니다. HTTP 방식을 이용해서 REST API를 구성하는데, HTTP는 모바일과 서버 간의 메시지를 주고받는 규칙입니다. 즉, 서버와 클라이언트(앱) 간의 메시지를 주고받는 통신 규약을 의미합니다. HTTP를 통해 클라이언트는 서버에게 URL을 통해서 요청(Request)하고 서버는 요청에 대한 응답(Response)을 주는데 대부분 JSON 형식으로 응답을 줍니다.
+> 
+2. Task 작업은 왜 global 스레드에서 동작하는지
+
+> 앱을 실행하는 동안에 Networking 기능이 많이 작동하는데 동시성을 제공하지 않는다면 사용자는 Networking 기능을 전부 작동하는 동안은 사용자가 해당 작업이 완료될 때까지 기다려야 합니다. 이에 동시성 프로그래밍 필요(다중 스레드)합니다. 컴퓨터는 네트워킹이 되는 동안에도 사용자와 인터렉션이 돼서 즉각적인 반응을 보여줘야 하는데, 그렇게 되지 못할 때 사용자는 불편함을 느끼기 때문에 동시성을 제공해줘야 합니다.
+> 
+3. 왜 @escaping 키워드를 사용하는지
+
+> 먼저 URLSession에 대한 이해가 선행되어야 합니다. 앱과 서버 간의 데이터를 주고받기 위해서는 HTTP 프로토콜을 이용해서 데이터를 주고받는데 앱에서 서버와 통신하기 위해 애플이 제공하는 API가 바로 URLSession입니다. URLSession의 사용 순서는 Configuration을 결정, Session 생성, Request에 사용할 url 설정, Task 결정 및 작성 순으로 진행됩니다. URLTask 중 하나인 DataTask는 Data를 받는 작업으로, Response 데이터를 메모리 상에서 처리합니다. URL 요청을 실시하고 완료 시 핸들러를 호출하는 Task 형식으로, Task가 실행된 후 핸들러가 실행되기 때문에 @escaping closure 형태로 받아와야 합니다.
+> 
+
+> 클로저가 함수에 인자로 전달됐지만 함수가 종료된 뒤 실행되는 것을 escape(탈출) 합니다. @escaping closure를 사용함으로서, 외부 변수/상수에 저장 가능 및 해당 함수가 실행이 끝나도 클로저 실행이 가능합니다. 이에 escaping 클로저는 completion handler, 즉 함수의 결과에 따라 다르게 동작하도록 비동기적 처리를 요구하는 함수에서 활용이 가능합니다. 서버 통신은 비동기 방식으로 작동하기에, response를 받아오기 전에 함수가 먼저 종료되어 빈 response가 나올 가능성 존재합니다. 따라서 escaping closure를 통해 서버에서 response를 다 가져오지 못한 상태로 함수가 종료되어도, 후에 서버 작업이 완료되면 escaping closure를 호출할 수 있기 때문에 response를 안전하게 전달받을 수 있습니다.
+> 
+4. 마지막으로 네트워크 통신을 통해 얻어진 response data를 어떻게 사용해야할지 고민해보시면 좋겠습니다.
+
+> 네트워크로부터 얻어진 response data를 completion handler에 전달하는 data task을 만들면 해결이 가능할 것으로 보입니다. completion handler는 task를 생성한 것과 다른 Grand Central Dispatch queue에서 호출되어 response data를 받았을 때 비동기적으로 실행됩니다. dataTask 메서드를 실행하고, resume() 메서드를 통해 데이터를 요청하고, 이를 받으면, completion handler는 실행되기 때문에, 해당 클로저 내부에서 response data에 대한 처리하고자 하는 작업을 수행하면 될 것으로 판단됩니다. 이제 Response data가 수신 완료된다면, delegate, notification, 새로운 tableView 생성, property observer 등을 통하여 해당 이벤트가 발생하였음을 전달해주면 Response data를 사용이 가능할 것으로 보입니다.
+>
+
+#### Q2. 폴더 및 파일 관리 고민
+- 이번 오픈마켓 프로젝트를 진행하면서 저희는 크게 Common, Resource, Model, View, Controller, Mock을 기준으로 폴더 작업을 해주었고, 그에 따라 파일 분류를 해보았는데, 저희의 분류작업이 괜찮은 방법인지 확인을 받고 싶습니다.
+
+#### A2. Unit Test 시 실제 서버로부터 데이터를 가져오지 못하는 이슈
+- 이번 오픈마켓 프로젝트를 진행하면서 저희는 크게 `Common`, `Resource`, `Model`, `View`, `Controller`, `Mock`을 기준으로 폴더 작업을 해주었고, 그에 따라 파일 분류를 해보았는데, 저희의 분류작업이 괜찮은 방법인지 확인을 받고 싶습니다.
+- 현재 프로젝트 규모가 작아 각 View, Model, Controller 등으로 분류를 해주셨지만 해당 종류별로만 구분을 한다면 프로젝트 규모가 커져가면서 파일 구조가 복잡해질 것 같습니다. 개인적으로 추천드리는 파일 구조는 크게 화면과 기능으로 구분하는 것입니다.
+- 피드백 내용
+    ```swift
+    └── OpenMarket
+        ├── View
+        │   ├── ViewController
+        │   ├── View
+        │   └── Model
+        ├── Network
+        ├── Extension
+        └── Mockup
+    
+    ```
+
+- 적용한 부분
+    ```swift
+    └── OpenMarket                  
+        ├── Application         
+        │   ├── Presentation
+        │   │   ├── ViewController
+        │   │   └── View
+        │   └── Domain
+        │         └── Model
+        ├── Networking               
+        │   └── Protocol
+        ├── Extensions
+        └── Resources
+    ```
+- View안에 다시 View가 들어가 있는 부분에 의문이 들어 Clean Architecture 구조를 찾아 보았습니다.
+- Clean Architecture 구조는 각 계층이 명확하게 분리되어있기 때문에 테스트와 유지 보수가 용이해지는 장점이 있어 채택하게 되었습니다.
+
+## 2️⃣ STEP 2
+
+### STEP 2 Questions & Answers
+
+#### Q1. 한개의 Cell을 사용하여 두개의 CollectionLayout 생성시 발생하는 오토레이아웃 문제
+**기존 CollectionViewCell**
+
+- 먼저 초기 화면이 구성이 되면, 컬렉션 뷰의 레이아웃을 ListLayout으로 설정하였습니다.
+- 하나의 CellRegistration 만을 바탕으로, Semented Control을 통해 ListLayout와 GridLayout를 전환하는 방식을 사용하였습니다.
+    - segemented Control 전환시 List와 Grid 뷰의 axis를 변경해 주었습니다.
+    - 기본 Custom Cell은 UICollectionViewListCell을 채택한 UI입니다.
+        - List의 accessory 설정을 활용하기 위해서 사용하였습니다.
+
+**문제점**
+
+- ListLayout을 위해 Cell 안의 UI 요소인 imageView의 width와 height의 Constraint를 설정해 두었습니다. 하지만 Grid Layout 화면으로의 전환시 이전에 설정한 Constraint가 그대로 남아 있어 Autolayout이 정상적으로 실행되지 않아 에러가 발생하였습니다.
+
+**시도한점**
+
+- ListLayout 구현 과정에서 설정된 Constraint가 Grid Layout 화면으로의 전환시에 필요하지 않다면 제거하는 방법을 생각하였습니다. Segmented Control을 클릭시`collectionView.visibleCells.forEach` 코드를 통하여 forEach문 안에서 Constraint를 제거하려고 하였으나 Cell이 생성된 후에 Constraint를 제거하고자 하여 imageView에 설정된 constraint을 제거할 수 없었습니다.
+
+**해결한점**
+
+- List와 Grid를 위한 View를 각각 두개로 만들어서 따로 Autolayout를 처리할 수 있도록 하였습니다.
+
+**궁금한점**
+
+- Segmented Control을 클릭시에 Constraint를 다르게 적용하여 Auto-layout이 안전하게 처리될 방법이 있을까요?
+- 똑같은 UIElement를 사용하는데 하나의 Cell로 Layout을 처리하는 것은 비효율적인 것일까요?
+    
+    ```swift
+       @objc func segmentedValueChanged(_ sender:UISegmentedControl!) {
+            let items = sender.selectedSegmentIndex
+    
+            switch items {
+            case 0 :
+                collectionView.setCollectionViewLayout(createListLayout(), animated: true)
+                collectionView.visibleCells.forEach { cell in
+                    guard let cell = cell as? CustomCollectionViewCell else {
+                        return
+                    }
+    
+                    cell.contentView.layer.borderColor = .none
+                    cell.contentView.layer.borderWidth = 0
+                    cell.accessories = [.disclosureIndicator()]
+    
+                    cell.configureStackView(of: .horizontal, textAlignment: .left)
+                }
+            case 1:
+                collectionView.setCollectionViewLayout(createGridLayout(), animated: true)
+                collectionView.visibleCells.forEach { cell in
+                    guard let cell = cell as? CustomCollectionViewCell else {
+                        return
+                    }
+    
+                    isSelected = true
+                    cell.accessories = [.delete()]
+                    cell.contentView.layer.borderColor = UIColor.black.cgColor
+                    cell.contentView.layer.borderWidth = 1
+    
+                    cell.configureStackView(of: .vertical, textAlignment: .center)
+                }
+    
+                collectionView.scrollToItem(at: IndexPath(item: -1, section: 0), at: .init(rawValue: 0), animated: false)
+            default:
+                break
+            }
+        }
+    
+        private func createListLayout() -> UICollectionViewLayout {
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.2))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 1)
+            let section = NSCollectionLayoutSection(group: group)
+            let layout = UICollectionViewCompositionalLayout(section: section)
+    
+            return layout
+        }
+    
+        private func createGridLayout() -> UICollectionViewLayout {
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = .init(top: 4, leading: 8, bottom: 4, trailing: 8)
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.8))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+            let section = NSCollectionLayoutSection(group: group)
+    
+            let layout = UICollectionViewCompositionalLayout(section: section)
+            return layout
+        }
+    
+    ```
+#### A1. 한개의 Cell을 사용하여 두개의 CollectionLayout 생성시 발생하는 오토레이아웃 문제
+
+- 지금은 listLayout값, gridLayout(type: `UICollectionViewLayout`) 의 설정된 값만 보고 왜 적용안되나 고민했다. stackView와 contentView는 그 안의 subview들과 설정한 레이아웃 값이 구체적이어야 하지만 제대로 레이아웃이 나온다. 지금처럼 rootStackView와 contentview 사이에서만 오토레이아웃 값을 설정하면 원하는대로 값이 제대로 나오지 않는다.
+- 보통 레이아웃 값을 바꾸고 싶을때 기존의 적용한 constraint(`NSLayoutConstraint`)값은 비활성화(isActive = false) 시키고, 새로운 constraint값을 활성화시킨다.
+- 하지만 위의 경우는 특정 상황에서 부분적으로 뷰의 모양을 변화시켜야 할 때 해야 하는 것이고, 지금 List, Grid 처럼 아예 모양이 다른 경우에는 ListCell, GridCell 따로 만들어서 구현해주는게 버그도 없고 유지보수에 더 좋고, 동료가 보기에도 편하다.
+
+#### Q2. ListConfiguration이 아닐 때 separator 생성 방법
+
+- list 형식의 CollectionView를 생성하는 가운데, list layout을 구성하는 방법은 listConfiguration을 통하여 간단하게 생성하는 방법 1과 compositional layout의 기본적인 형태로 item, group, section을 각각 설정하여, layout에 section을 넣어주어 이를 반환하는 방법 2가 있습니다.
+- 코드
+    
+    ```swift
+    // 방법 1
+    private func createListLayout() -> UICollectionViewLayout {
+        let config = UICollectionLayoutListConfiguration(appearance: .plain)
+    
+        return UICollectionViewCompositionalLayout.list(using: config)
+    }
+    
+    // 방법 2
+    func createListLayout() -> UICollectionViewLayout {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalWidth(0.2))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 1)
+        let section = NSCollectionLayoutSection(group: group)
+        let layout = UICollectionViewCompositionalLayout(section: section)
+    
+        return layout
+    }
+    
+    ```
+    
+- 이에 따라, 셀을 등록하는 방법에 있어서 listConfiguration을 사용한 방법1의 경우에는 UICollectionViewListCell을 사용하였습니다. 방법2에서는 커스텀 셀인 ListCollectionCell을 사용하여 직접 cell 내 UI들의 오토레이아웃을 잡아주어야 했습니다. 저희는 방법 2에 따라 진행하였는데, 방법 1인listConfiguration의 경우에는 셀 간의 구분선을 separatorLayoutGuide을 통하여 설정해줄 수 있는데, 방법 2의 경우에는 구분선을 그려주기 위한 메서드를 찾지 못하였습니다. 혹시 제이슨께서 이를 해결하는 방법을 알고 있으신지 질문드리고 싶습니다!
+
+#### A2. ListConfiguration이 아닐 때 separator 생성 방법
+
+- CustomCell의 경우엔 SeparatorView가 따로 존재하지 않다. 따라서 uiview 로 만들어야 한다. 그리고 디자이너가 디자인한 구분선은 ListConfiguration cell의 separtor처럼 생기지 않을 수 있기 때문에 따로 만들어주는 것이 더 좋을 때도 있다는 점을 참고하자.
+- 두번째 방법은 CollectionViewFlowLayout을 쓰는 방법입니다. https://stackoverflow.com/a/28691409 아래 swift 코드도 있으니 참고하시면 좋을 거 같다
+- 세번째 방법으로 CALayer의 extension을 통해 contentView의 아래에 layer을 추가하는 방법이다. 이는 첫번째 방법과 거의 유사하다.
+- 코드(CALayer)
+    
+    ```swift
+    private extension CALayer {
+        func addBottomBorder() {
+            let border = CALayer()
+            border.backgroundColor = UIColor.systemGray3.cgColor
+            border.frame = CGRect(x: 0,
+                                  y: frame.height + 4,
+                                  width: frame.width,
+                                  height: 0.5)
+            
+            self.addSublayer(border)
+        }
+    }
+    ```
+    
+- 코드(ListCollectionCell)
+    
+    ```swift
+    override init(frame: CGRect) {
+            super.init(frame: frame)
+            
+            contentView.layer.addBottomBorder()
+            configureListCell()
+    }
+    ```
+    
+- 해결하려고 다음의 [블로그](https://appleeducation.instructure.com/courses/148/pages/7af764bd3bd96d42c5bda9828eeeaa23-dot-readme)도 봤는데, 생략된 부분이 다수 있어 동일하게 구현하기에는 무리가 있었다.
+
+#### Q3. 페이지 수에 따른 ListConfiguration cell과 custom cell의 오토레이아웃 에러 발생 유무
+
+```
+`URL = "<https://market-training.yagom-academy.kr/api/products?page_no=1&items_per_page=50>"`
+```
+
+- ListConfiguration Cell을 사용해 URL이 위의 코드(page 당 50개의 아이템을 불러오기)와 같이 주어졌을때 콘솔창에 수 많은 오토레이아웃 에러를 마주쳤습니다. 하지만 custom cell로 구현했을때는 오토레이아웃 문제 없이 사용할 수 있었는데, 이와 같은 차이가 발생하는 이유를 여쭈어보고 싶습니다.
+
+#### A3. 페이지 수에 따른 ListConfiguration cell과 custom cell의 오토레이아웃 에러 발생 유무
+
+- [what the fuck autolayout](https://www.wtfautolayout.com/) 페이지에서 아래 경고글을 복붙해서 확인해보았다.
+
+```swift
+("<NSLayoutConstraint:0x600001c0cb40 UIImageView:0x13859f0b0.height == 60 (active)>","<NSLayoutConstraint:0x600001c0dc70 V:|-(0)-[UIStackView:0x13859ed90] (active, names: '|':UIView:0x1385a1210 )>","<NSLayoutConstraint:0x600001c0dcc0 UIStackView:0x13859ed90.bottom == UIView:0x1385a1210.bottom (active)>","<NSLayoutConstraint:0x600001c0ee90 'UISV-canvas-connection' UIStackView:0x13859ed90.top == _UILayoutSpacer:0x600000064780'UISV-alignment-spanner'.top (active)>","<NSLayoutConstraint:0x600001c0ef30 'UISV-canvas-connection' UIStackView:0x13859ed90.centerY == UIImageView:0x13859f0b0.centerY (active)>","<NSLayoutConstraint:0x600001c0ec60 'UISV-spanning-boundary' _UILayoutSpacer:0x600000064780'UISV-alignment-spanner'.top <= UIImageView:0x13859f0b0.top (active)>","<NSLayoutConstraint:0x600001c30050 'UIView-Encapsulated-Layout-Height' UIView:0x1385a1210.height == 44 (active)>")
+```
+
+- 이유는 UICollectionLayoutListConfiguration의 plain은 height가 44로 설정되어있는데 CollectionListViewCell의 productImageView는 60이고 똑같이 cell의 height 도 60인것과 충돌해서 오토레이아웃 버그가 발생한 것이다. 반면 ContentView는 설정값이 따로 존재하지 않아 경고가 출력이 되지 않는 것이였다. 충분히 문제의 원인을 파헤쳐보면 알 수 있었다.
+
+## 3️⃣ STEP 3
+
+### STEP 3 Questions & Answers
 
 #### Q1. ScrollView AutoLayout 관련 질문
     
@@ -621,9 +949,9 @@ func presentConfirmAlert(message: String) {
 - 레이아웃 값에 따라 디폴트로 어쩔 때는 frameLayoutGuide를 따르고 어쩔 때는 contentLayoutGuide를 따르는지 모르겠고, 실제로 그런게 있는지도 잘 모르겠다는 의견을 받았습니다.
 - 이를 알아보는 것은 매우 험난한 과정이므로, 정확한 레이아웃 값을 주는 것이 최선의 방법임을 깨달았습니다. contentLayoutGuide이 필요한 부분이면 잘 적용되게 코드를 추가하고, frameLayoutGuide이 필요한 필요한 부분이면 또 잘 적용되게 코드를 추가한다면 본인의 생각에 맞는 오토레이아웃을 설정하는데 도움이 될 것임을 알게 되는 계기가 되었습니다.
     
-## 2️⃣ STEP 2
+## 4️⃣ STEP 4
 
-### STEP 2 Questions & Answers
+### STEP 4 Questions & Answers
 
 #### Q1. POST 시 Requried Parameters 관련 질문
     
@@ -679,3 +1007,17 @@ func presentConfirmAlert(message: String) {
     ```
     
 - 이 예시는 필수값이어도 Optional 로 받고 Enum화 할수 있는 프로퍼티여도 raw한 타입으로 선언하고 이후에 이 모델값을 사용할때는 연산프로퍼티를 통해 Enum 생성후 이용하는 방식이라고 한다.
+
+---
+
+    
+## 📚 참고문서
+
+- [URLSession](https://developer.apple.com/documentation/foundation/urlsession)
+    - [Fetching Website Data into Memory](https://developer.apple.com/documentation/foundation/url_loading_system/fetching_website_data_into_memory)
+- [UICollectionView](https://developer.apple.com/documentation/uikit/uicollectionview)
+    - [Modern cell configuration](https://developer.apple.com/videos/play/wwdc2020/10027/)
+    - [Lists in UICollectionView](https://camp.yagom-academy.kr/camp/61d414e5e4081120ba7884d2/projects/62caa0aa41131548559889b6)
+    - [Implementing Modern Collection Views](https://developer.apple.com/documentation/uikit/views_and_controls/collection_views/implementing_modern_collection_views)
+- [Data Entry - iOS - Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/patterns/entering-data/)
+- [UIAlertController](https://developer.apple.com/documentation/uikit/uialertcontroller)
